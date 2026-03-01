@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS | Infrastructure Terminal</title>
+    <title>SYSTEM | Infrastructure Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -48,7 +48,6 @@
             color: var(--brand-yellow);
         }
 
-        /* Custom scrollbar for that pro look */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { background: var(--border-gray); border-radius: 10px; }
@@ -60,7 +59,7 @@
         <div class="flex items-center space-x-10">
             <div class="flex items-center space-x-2">
                 <div class="w-3 h-3 bg-[#f0b90b] rotate-45"></div>
-                <span class="font-bold text-lg tracking-tight uppercase text-white">Nexus<span class="text-[#f0b90b]">Terminal</span></span>
+                <span class="font-bold text-lg tracking-tight uppercase text-white">System<span class="text-[#f0b90b]">Terminal</span></span>
             </div>
             <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-widest">
                 <a href="/log" class="nav-link">/log</a>
@@ -73,7 +72,7 @@
         <div class="flex items-center space-x-6">
             <div class="hidden sm:block text-right">
                 <p class="text-[10px] text-gray-500 uppercase">System Latency</p>
-                <p class="text-xs text-[#0ecb81] font-bold">12.4ms</p>
+                <p id="latency-display" class="text-xs text-[#0ecb81] font-bold">--ms</p>
             </div>
             <a href="/discord" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-5 py-2 rounded-sm text-xs font-bold transition-all transform active:scale-95">
                 JOIN DISCORD
@@ -166,9 +165,43 @@
             <span class="whitespace-nowrap"><span class="text-white">MEM/CORE:</span> <span class="text-[#0ecb81]">0.0241 ↑</span></span>
         </div>
         <div class="hidden md:block">
-            &copy; 2026 NEXUS SYSTEMS ARCHITECTURE.
+            &copy; 2026 SYSTEMS ARCHITECTURE.
         </div>
     </footer>
 
+    <script>
+        /**
+         * Dynamic Latency Tracker
+         * Pings a high-availability endpoint to calculate actual network RTT.
+         */
+        async function updateLatency() {
+            const display = document.getElementById('latency-display');
+            const startTime = Date.now();
+            
+            try {
+                // Using a small, high-availability resource for the ping
+                await fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-cache' });
+                const rtt = Date.now() - startTime;
+                
+                display.innerText = `${rtt}.0ms`;
+                
+                // Color coding based on performance
+                if (rtt < 50) {
+                    display.className = "text-xs text-[#0ecb81] font-bold";
+                } else if (rtt < 150) {
+                    display.className = "text-xs text-[#f0b90b] font-bold";
+                } else {
+                    display.className = "text-xs text-[#f6465d] font-bold";
+                }
+            } catch (e) {
+                display.innerText = "OFFLINE";
+                display.className = "text-xs text-[#f6465d] font-bold";
+            }
+        }
+
+        // Initial check and set interval every 5 seconds
+        updateLatency();
+        setInterval(updateLatency, 5000);
+    </script>
 </body>
 </html>
