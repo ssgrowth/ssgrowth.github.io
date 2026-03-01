@@ -50,6 +50,36 @@
         ::-webkit-scrollbar-thumb { background: var(--border-gray); border-radius: 10px; }
     </style>
 </head>
+    <script>
+(function() {
+    // 1. Check Site Lockdown
+    if (localStorage.getItem('siteLocked') === 'true') {
+        const pass = prompt("SYSTEM IS UNDER LOCKDOWN. ENTER ACCESS KEY:");
+        if (pass !== "root123") { // Matches your 'True Password'
+            document.body.innerHTML = "<div style='background:#0b0e11; color:#f6465d; height:100vh; display:flex; align-items:center; justify-content:center; font-family:monospace;'>ACCESS DENIED: SYSTEM LOCKED</div>";
+        }
+    }
+
+    // 2. Check Maintenance Mode (Visuals)
+    if (localStorage.getItem('maintMode') === 'true') {
+        document.body.style.border = "5px solid #f0b90b";
+        const warn = document.createElement('div');
+        warn.style = "background:#f0b90b; color:black; font-size:10px; font-weight:bold; text-align:center; padding:2px; position:fixed; top:0; width:100%; z-index:9999;";
+        warn.innerText = "SYSTEM UNDER MAINTENANCE: PERFORMANCE MAY BE IMPACTED";
+        document.body.prepend(warn);
+    }
+
+    // 3. Check Broadcasts
+    const msg = localStorage.getItem('globalBroadcast');
+    if (msg) {
+        const bar = document.createElement('div');
+        bar.style = "background:#1e2329; color:#0ecb81; border:1px solid #363a45; padding:10px; font-size:12px; margin:20px; border-left:4px solid #0ecb81;";
+        bar.innerHTML = `<strong>[BROADCAST]:</strong> ${msg}`;
+        // Insert it at the top of main or body
+        document.body.prepend(bar);
+    }
+})();
+</script>
 <body class="min-h-screen flex flex-col">
 
     <nav class="border-b border-[#363a45] bg-[#181a20] px-6 py-3 flex justify-between items-center sticky top-0 z-50">
